@@ -1,3 +1,4 @@
+import os
 import json
 
 
@@ -19,10 +20,14 @@ def create_report(answer: str, temperature: float):
 
     chunks = split_string(answer, length=100)
 
+    if not os.path.exists(os.path.join(os.getcwd(), "report.json")):
+        fd = os.open(os.path.join(os.getcwd(), "report.json"), os.O_CREAT)
+        os.close(fd)
+
     try:
         with open("report.json", "r") as file:
             data = json.load(file)
-    except json.decoder.JSONDecodeError:
+    except json.decoder.JSONDecodeError or FileNotFoundError:
         data = []
 
     new_data = {"temperature": temperature, "answer": chunks}
